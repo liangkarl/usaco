@@ -25,8 +25,8 @@ int get_same_color_beads_len(string &beads, int start) {
 	for (int i = start; i < beads.length(); i++) {
 		color = beads.at(i);
 		/* cout << "pos: " << i << " " */
-			<< "current: " << color << " "
-			<< "request: " << request << endl;
+		/*	<< "current: " << color << " " */
+		/*	<< "request: " << request << endl; */
 
 		if (color == WHITE || color == request) {
 			// "w/b/r -> w" or "r/b -> r/b"
