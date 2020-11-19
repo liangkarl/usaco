@@ -24,7 +24,7 @@ int get_same_color_beads_len(string &beads, int start) {
 	request = beads.at(start);
 	for (int i = start; i < beads.length(); i++) {
 		color = beads.at(i);
-		cout << "pos: " << i << " "
+		/* cout << "pos: " << i << " " */
 			<< "current: " << color << " "
 			<< "request: " << request << endl;
 
@@ -54,23 +54,23 @@ int main() {
 	string beads, beads_head;
 
 	fin >> beads_len >> beads;
-	cout << "beads: " << beads << endl;
+	/* cout << "beads: " << beads << endl; */
 	pos = 0;
 	len = get_same_color_beads_len(beads, pos);
-	cout << "get first len: " << len << endl;
+	/* cout << "get first len: " << len << endl; */
 
 	if (pos + len >= beads.length()) {
-		cout << "reach string end: " << pos + len << endl;
+		/* cout << "reach string end: " << pos + len << endl; */
 		fout << len << endl;
 		return 0;
 	}
 
 	len += get_same_color_beads_len(beads, pos + len);
-	cout << "get total len: " << len << endl;
+	/* cout << "get total len: " << len << endl; */
 
 	beads_head = beads.substr(0, len);
 	beads.append(beads_head);
-	cout << "concat beads: " << beads << endl;
+	/* cout << "concat beads: " << beads << endl; */
 
 	// Prepare search
 	int max_len, next_pos;
@@ -79,18 +79,18 @@ int main() {
 	max_len = 1;
 	while (pos < beads.length()) {
         len = get_same_color_beads_len(beads, pos);
-		cout << "get first section len: " << len << endl;
+		/* cout << "get first section len: " << len << endl; */
 		next_pos = pos + len;
 
 		if (next_pos >= beads.length()) {
 			if (max_len < len)
 				max_len = len;
-			cout << "reach string end: " << next_pos << endl;
+			/* cout << "reach string end: " << next_pos << endl; */
 			break;
 		}
 
 		len += get_same_color_beads_len(beads, next_pos);
-		cout << "get total len: " << len << endl;
+		/* cout << "get total len: " << len << endl; */
 
 		if (max_len < len)
 			max_len = len;
@@ -106,8 +106,7 @@ int main() {
 			}
 			pos++;
 		}
-		// search next non-white pos to prevent "wwwwwrrbb..."
-		cout << "pos: " << pos << endl;
+		/* cout << "pos: " << pos << endl; */
 	}
 	if (max_len > beads_len)
 		max_len = beads_len;
