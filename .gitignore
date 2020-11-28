@@ -1,2 +1,5 @@
 *.in
 *.out
+*.o
+Makefile
+.ccls-cache
