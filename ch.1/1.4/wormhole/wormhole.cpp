@@ -106,6 +106,35 @@ int solve(hole holes[], int n, int start, int paired) {
 	return count;
 }
 
+int solve2(hole holes[], int n) {
+	int i;
+	for (i = 0; i < n; i++) {
+		if (holes[i].link == nullptr)
+			break;
+	}
+
+	if (i >= n)
+		return exist_circle(holes, n);
+
+	// cout << "find: " << i << " -> " << holes[i] << '\n';
+
+	int count;
+	count = 0;
+	for (int j = i + 1; j < n; j++) {
+		// pair holes here
+		if (holes[j].link == nullptr) {
+			holes[i].link = &holes[j];
+			holes[j].link = &holes[i];
+			// find next hole pair
+			count += solve2(holes, n);
+
+			// reset
+			holes[i].link = holes[j].link = nullptr;
+		}
+	}
+	return count;
+}
+
 int compare(const void *a, const void *b) {
 	hole *ha, *hb;
 	ha = (hole*)a;
@@ -143,7 +172,8 @@ int main() {
 	right_on[right] = nullptr;
 
 	int ans;
-	ans = solve(holes, n, 0, 0);
+	// ans = solve(holes, n, 0, 0);
+	ans = solve2(holes, n);
 	fout << ans << endl;
 	return 0;
 }
