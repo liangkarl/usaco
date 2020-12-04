@@ -24,7 +24,6 @@ typedef vector<int>::iterator v_it;
 list<ab_pair> ab;
 uint16_t table[SQUARE(MAX_M)+SQUARE(MAX_M)];
 int table_size = sizeof(table) / sizeof(uint16_t);
-int index[MAX_N + 1]; // prevent oom when index = 25
 
 vector<int>& generate_pq(int m) {
 	// generate p^2 + q^2 set
@@ -61,24 +60,24 @@ int main() {
 	// cout << '\n';
 
 	int a, a1b, diff;
-	int depth, need;
+	int depth, need, index;
 	for (int i = 0; i < pq.size(); i++) {
 		a = ppq[i];
 		// printf("a=%d\n", a);
 		if (pq.size() - i < n)
-			continue;
+			break;
+
 		for (int j = i+1; j < pq.size(); j++) {
 			a1b = ppq[j];
 			diff = a1b - a;
-			if (diff <= 0 || pq.size() - j < n - 1)
-				continue;
+			if (pq.size() - j < n - 1)
+				break;
+
 			// printf("a1b=%d, diff=%d\n", a1b, diff);
-			// find_seq(a, a1b-a, 2, n, pq.begin() + (j+1), pq);
-			// find_seq(a, a1b-a, 2, n, j+1, pq);
 			depth = 2;
-			index[depth] = j + 1;
+			index = j + 1;
 			for (; depth < n; depth++) {
-				if (pq.size() - index[depth] < n - depth) {
+				if (pq.size() - index < n - depth) {
 					// puts("no enough elements");
 					break;
 				}
@@ -98,7 +97,7 @@ int main() {
 				}
 
 				// puts("find");
-				index[depth+1] = table[need];
+				index = table[need];
 			}
 			if (depth == n) {
 				// puts("find");
