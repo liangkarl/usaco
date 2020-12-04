@@ -60,28 +60,21 @@ int main() {
 	// cout << '\n';
 
 	int a, a1b, diff;
-	int depth, need, index;
-	for (int i = 0; i < pq.size(); i++) {
+	int depth, need;
+	// use branch in loop would add more 0.3s
+	int a_len = pq.size() - (n-1);
+	int nb_len = pq.size() - (n-2);
+	for (int i = 0; i < a_len; i++) {
 		a = ppq[i];
 		// printf("a=%d\n", a);
-		if (pq.size() - i < n)
-			break;
 
-		for (int j = i+1; j < pq.size(); j++) {
+		for (int j = i+1; j < nb_len; j++) {
 			a1b = ppq[j];
 			diff = a1b - a;
-			if (pq.size() - j < n - 1)
-				break;
 
 			// printf("a1b=%d, diff=%d\n", a1b, diff);
 			depth = 2;
-			index = j + 1;
 			for (; depth < n; depth++) {
-				if (pq.size() - index < n - depth) {
-					// puts("no enough elements");
-					break;
-				}
-
 				// go through the row
 				need = a + depth * diff;
 
@@ -95,9 +88,6 @@ int main() {
 					// puts("no");
 					break;
 				}
-
-				// puts("find");
-				index = table[need];
 			}
 			if (depth == n) {
 				// puts("find");
