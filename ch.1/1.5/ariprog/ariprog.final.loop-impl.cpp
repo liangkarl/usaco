@@ -29,12 +29,13 @@ vector<int>& generate_pq(int m) {
 	// generate p^2 + q^2 set
 	static vector<int> pq(SQUARE(m+1));
 	int val, ind;
-	for (int p = 0; p <= m; p++)
-		for (int q = 0; q <= m; q++) {
+	for (int p = 0; p <= m; p++) {
+		for (int q = p; q <= m; q++) {
 			val = SQUARE(p) + SQUARE(q);
 			ind = p+q*(m+1);
 			pq[ind] = val;
 		}
+	}
 
 	v_it it;
 	sort(pq.begin(), pq.end());
