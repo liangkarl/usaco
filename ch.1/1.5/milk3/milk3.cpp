@@ -17,104 +17,74 @@ LANG: C++
 using namespace std;
 
 class solve_milk3 {
-	static const int MAX_MILKS = 3;
-	static const int MILK_A = 0;
-	static const int MILK_B = 1;
-	static const int MILK_C = 2;
-	static const int DISTANCE = 5;
+	enum ID {
+		MILK_A = 0,
+		MILK_B,
+		MILK_C,
+		MAX_MILKS,
+	};
 
-	int milks_vol[MAX_MILKS];
+	union state {
+		uint8_t milks[MAX_MILKS + 1] = {0}; // 1 for dummy
+		uint32_t state;
+	};
+
+	union state vol;
 	int now_state;
 
-	set<int> states;
-	set<int> ans;
+	set<int> states, ans;
 	queue<int> tree;
-
-	inline int to_state(int *milks) {
-		// for (int i = 0; i < 3; i++) {
-		// 	printf("i(%d): %d, ", i, milks[i]);
-		// }
-		// puts("");
-		return milks[MILK_A] + (milks[MILK_B] << DISTANCE)
-			+ (milks[MILK_C] << (DISTANCE * 2));
-	}
-
-	int save_state(int *milks) {
-		// a + b * 10^2 + c * 10^4, since max values are 1~20
-		int state;
-		state = to_state(milks);
-		// printf("-> %d\n", state);
-		states.insert(state);
-		return state;
-	}
-
-	bool has_state(int *milks) {
-		int state;
-		state = to_state(milks);
-		return states.find(state) != states.end();
-	}
-
-	void load_state(int state, int *milks) {
-		const int mask = 0x1F;
-		for (int id = MILK_A; id < MAX_MILKS; id++) {
-			milks[id] = (state & (mask << (DISTANCE * id)))
-				>> (DISTANCE * id);
-		}
-	}
 
 	public:
 	solve_milk3(int a, int b, int c) {
-		milks_vol[MILK_A] = a;
-		milks_vol[MILK_B] = b;
-		milks_vol[MILK_C] = c;
+		vol.milks[MILK_A] = a;
+		vol.milks[MILK_B] = b;
+		vol.milks[MILK_C] = c;
 	}
 
 	void solve() {
-		int milks[MAX_MILKS] = {0};
+		union state now;
 		int next_id, rest_milk;
-		milks[MILK_A] = 0;
-		milks[MILK_B] = 0;
-		milks[MILK_C] = milks_vol[MILK_C];
-		// now_state = to_state(milks);
-		// printf("now: %d\n", now_state);
-		// milks[0] = milks[1] = milks[2] = -1;
-		// load_state(now_state, milks);
-		// printf("%d %d %d\n", milks[0], milks[1], milks[2]);
-		tree.push(save_state(milks));
+		now.milks[MILK_A] = 0;
+		now.milks[MILK_B] = 0;
+		now.milks[MILK_C] = vol.milks[MILK_C];
+
+		states.insert(now.state);
+		tree.push(now.state);
 		// use BFS to discover every nodes
 		while (!tree.empty()) {
 			now_state = tree.front();
-			load_state(now_state, milks);
-			printf("now: %d\n", now_state);
+			now.state = now_state;
 			// give milk to others
 			for (int id = MILK_A; id <= MILK_C; id++) {
 				// go next if current milk is empty
-				if (milks[id] == 0)
+				if (now.milks[id] == 0)
 					continue;
 
 				// save state if milk a is empty
-				if (milks[MILK_A] == 0) {
-					ans.insert(milks[MILK_C]);
+				if (now.milks[MILK_A] == 0) {
+					ans.insert(now.milks[MILK_C]);
 				}
 
 				for (int offset = 1; offset <= 2; offset++) {
 					next_id = (id + offset) % MAX_MILKS;
-					rest_milk = milks[id] + milks[next_id] - milks_vol[next_id];
+					rest_milk = now.milks[id] + now.milks[next_id] - vol.milks[next_id];
 					if (rest_milk <= 0) {
-						milks[next_id] += milks[id];
-						milks[id] = 0;
+						now.milks[next_id] += now.milks[id];
+						now.milks[id] = 0;
 					} else {
-						milks[next_id] = milks_vol[next_id];
-						milks[id] = rest_milk;
+						now.milks[next_id] = vol.milks[next_id];
+						now.milks[id] = rest_milk;
 					}
 
 					// save result if it's new state
-					if (!has_state(milks)) {
-						tree.push(save_state(milks));
+					if (states.find(now.state) == states.end()) {
+						states.insert(now.state);
+						tree.push(now.state);
 					}
 
 					// reset state
-					load_state(now_state, milks);
+					now.state = now_state;
 				}
 			}
 			tree.pop();
