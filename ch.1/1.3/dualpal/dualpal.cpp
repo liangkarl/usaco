@@ -1,5 +1,5 @@
 /*
-ID: B9532025
+ID: Karl Liang
 TASK: dualpal
 LANG: C++
 */

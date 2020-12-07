@@ -1,5 +1,5 @@
 /*
-ID: B9532025
+ID: Karl Liang
 TASK: gift1
 LANG: C++
 */
